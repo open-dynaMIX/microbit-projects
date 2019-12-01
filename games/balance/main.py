@@ -70,17 +70,6 @@ class Balance(Game):
                 self.fruit = self.get_fruit()
                 self.set(self.fruit, 5)
 
-    def run(self):
-        self._run()
-        if self.score > self.highscore_val:
-            self.highscore.set(self.score)
-            display.scroll("HIGHSCORE")
-
-        if self.score < 10:
-            display.show(self.score, loop=True)
-        else:
-            display.scroll(self.score, loop=True)
-
 
 highscore = Highscore()
 game = Balance(highscore)

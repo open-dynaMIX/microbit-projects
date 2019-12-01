@@ -33,12 +33,6 @@ class Ship(Game):
             if new_para not in self.paras:
                 return new_para
 
-    def print_ints(self, value, loop=False):
-        if self.score < 10:
-            display.show(value, loop=loop)
-        else:
-            display.scroll(value, loop=loop)
-
     def set(self, dot, amount=ME_BRIGHTNESS):
         display.set_pixel(dot.x, dot.y, amount)
 

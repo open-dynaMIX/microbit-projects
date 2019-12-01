@@ -45,8 +45,21 @@ class Game:
     def set(self, dot, amount):
         display.set_pixel(dot.x, dot.y, amount)
 
+    def print_ints(self, value, loop=False):
+        if self.score < 10:
+            display.show(value, loop=loop)
+        else:
+            display.scroll(value, loop=loop)
+
     def validate(self):
         raise NotImplementedError()
 
-    def run(self):
+    def _run(self):
         raise NotImplementedError()
+
+    def run(self):
+        self._run()
+        if self.score > self.highscore_val:
+            self.highscore.set(self.score)
+            display.scroll("HIGHSCORE")
+        self.print_ints(self.score, loop=True)
