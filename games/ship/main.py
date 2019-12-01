@@ -33,9 +33,6 @@ class Ship(Game):
             if new_para not in self.paras:
                 return new_para
 
-    def set(self, dot, amount=ME_BRIGHTNESS):
-        display.set_pixel(dot.x, dot.y, amount)
-
     def change_speed(self, speed):
         self.speed = speed
 
