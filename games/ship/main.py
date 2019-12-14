@@ -89,15 +89,12 @@ class Ship(Game):
 
     def _run(self):
         start = utime.ticks_ms()
-        valid = False
+        valid = True
         while True:
             self.handle_button_presses()
             if utime.ticks_diff(utime.ticks_ms(), start) > self.speed:
-                valid = self.validate()
-                if not valid:
+                if not valid and not self.validate():
                     break
-                else:
-                    valid = False
                 self.handle_paras()
                 start = utime.ticks_ms()
                 valid = self.validate()

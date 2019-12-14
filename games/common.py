@@ -42,7 +42,7 @@ class Game:
         self.highscore = highscore
         self.highscore_val = self.highscore.read()
 
-    def set(self, dot, amount):
+    def set(self, dot, amount=9):
         display.set_pixel(dot.x, dot.y, amount)
 
     def print_ints(self, value, loop=False):
