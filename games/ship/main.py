@@ -68,13 +68,13 @@ class Ship(Game):
             presses = button_a.get_presses()
             if presses:
                 self.set(self.me, 0)
-                self.me.x -= presses
+                self.me.x -= presses if self.me.x - presses >= 0 else 0
                 self.set(self.me)
         if not self.me.x == 4:
             presses = button_b.get_presses()
             if presses:
                 self.set(self.me, 0)
-                self.me.x += presses
+                self.me.x += presses if self.me.x + presses <= 4 else 0
                 self.set(self.me)
 
     def validate(self):
