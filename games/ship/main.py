@@ -25,13 +25,10 @@ class Ship(Game):
         ]
 
     def get_new_para(self):
-        while True:
-            new_para = Dot(
-                random.randint(0, 4),
-                0,
-            )
-            if new_para not in self.paras:
-                return new_para
+        return Dot(
+            random.randint(0, 4),
+            0,
+        )
 
     def change_speed(self, speed):
         self.speed = speed
@@ -98,7 +95,6 @@ class Ship(Game):
                 self.handle_paras()
                 start = utime.ticks_ms()
                 valid = self.validate()
-
 
     def run(self):
         self._run()
