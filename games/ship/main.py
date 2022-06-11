@@ -61,18 +61,18 @@ class Ship(Game):
     def handle_button_presses(self):
         if button_a.is_pressed() and button_b.is_pressed():
             display.scroll(self.highscore_val)
-        if not self.me.x == 0:
-            presses = button_a.get_presses()
-            if presses:
-                self.set(self.me, 0)
-                self.me.x -= presses if self.me.x - presses >= 0 else 0
-                self.set(self.me)
-        if not self.me.x == 4:
-            presses = button_b.get_presses()
-            if presses:
-                self.set(self.me, 0)
-                self.me.x += presses if self.me.x + presses <= 4 else 0
-                self.set(self.me)
+
+        presses = button_a.get_presses()
+        if presses:
+            self.set(self.me, 0)
+            self.me.x = self.me.x - presses if self.me.x - presses >= 0 else 4
+            self.set(self.me)
+
+        presses = button_b.get_presses()
+        if presses:
+            self.set(self.me, 0)
+            self.me.x = self.me.x + presses if self.me.x + presses <= 4 else 0
+            self.set(self.me)
 
     def validate(self):
         for para in self.paras:
