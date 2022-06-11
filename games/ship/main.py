@@ -1,7 +1,7 @@
 from microbit import *
 import random
 import utime
-from common import Dot, Highscore, Game
+from common import Dot, HS, Game
 
 
 ME_BRIGHTNESS = 9
@@ -9,10 +9,10 @@ PARA_BRIGHTNESS = 7
 
 
 class Ship(Game):
-    def __init__(self, highscore):
-        super().__init__(highscore)
-        self.me = Dot(2, 4, 0, 0)
-        self.set(self.me)
+    def __init__(self, hs):
+        super().__init__(hs)
+        self.me = Dot(2, 4, ME_BRIGHTNESS)
+        self.me.show()
 
         self.paras = []
         self.para_amount = 1
@@ -24,10 +24,12 @@ class Ship(Game):
             (40, self.change_speed, 300),
         ]
 
-    def get_new_para(self):
+    @staticmethod
+    def get_new_para():
         return Dot(
             random.randint(0, 4),
             0,
+            PARA_BRIGHTNESS
         )
 
     def change_speed(self, speed):
@@ -45,34 +47,34 @@ class Ship(Game):
     def handle_paras(self):
         self.run_side_effects()
         for para in list(self.paras):
-            self.set(para, 0)
-            para.y += 1
-            if para.y > 4:
+            if para.y + 1 > 4:
+                para.show(0)
                 self.paras.remove(para)
-            else:
-                self.set(para, PARA_BRIGHTNESS)
+                continue
+            para.set(y=para.y + 1)
         while len(self.paras) < self.para_amount:
             if any([p.y in [0, 1] for p in self.paras]):
                 break
             self.paras.append(self.get_new_para())
-            self.set(self.paras[-1], PARA_BRIGHTNESS)
-        self.set(self.me)
+            self.paras[-1].show()
 
     def handle_button_presses(self):
         if button_a.is_pressed() and button_b.is_pressed():
-            display.scroll(self.highscore_val)
+            display.scroll(self.hs_val)
 
         presses = button_a.get_presses()
         if presses:
-            self.set(self.me, 0)
-            self.me.x = self.me.x - presses if self.me.x - presses >= 0 else 4
-            self.set(self.me)
+            self.me.set(
+                x=(self.me.x - presses) if (self.me.x - presses) >= 0 else 4,
+                b=ME_BRIGHTNESS,
+            )
 
         presses = button_b.get_presses()
         if presses:
-            self.set(self.me, 0)
-            self.me.x = self.me.x + presses if self.me.x + presses <= 4 else 0
-            self.set(self.me)
+            self.me.set(
+                x=(self.me.x + presses) if (self.me.x + presses) <= 4 else 0,
+                b=ME_BRIGHTNESS,
+            )
 
     def validate(self):
         for para in self.paras:
@@ -98,12 +100,12 @@ class Ship(Game):
 
     def run(self):
         self._run()
-        if self.score > self.highscore_val:
-            self.highscore.set(self.score)
-            display.scroll("HIGHSCORE")
+        if self.score > self.hs_val:
+            self.hs.set(self.score)
+            display.scroll("1ST")
         self.print_ints(self.score, loop=True)
 
 
-highscore = Highscore()
-game = Ship(highscore)
+hs = HS()
+game = Ship(hs)
 game.run()

@@ -1,23 +1,37 @@
 from microbit import *
 import random
-from common import Dot, Highscore, Game
+from common import Dot as DotCo, HS, Game
+
+
+ME_BRIGHTNESS = 9
+FRUIT_BRIGHTNESS = 5
+
+
+class Dot(DotCo):
+    def __init__(self, x, y, xv, yv, b):
+        super().__init__(x, y, b)
+        self.xv =xv
+        self.yv = yv
 
 
 class Balance(Game):
-    def __init__(self, highscore):
-        super().__init__(highscore)
+    def __init__(self, hs):
+        super().__init__(hs)
 
-        self.me = Dot(2, 2, 0, 0)
-        self.set(self.me, 9)
+        self.me = Dot(2, 2, 0, 0, ME_BRIGHTNESS)
+        self.me.show()
 
         self.fruit = self.get_fruit()
-        self.set(self.fruit, 5)
+        self.fruit.show()
 
     def get_fruit(self):
         while True:
             new_fruit = Dot(
                 random.randint(0, 4),
                 random.randint(0, 4),
+                None,
+                None,
+                FRUIT_BRIGHTNESS,
             )
             if not new_fruit == getattr(self, "fruit", None):
                 return new_fruit
@@ -43,34 +57,35 @@ class Balance(Game):
 
     def handle_button_presses(self):
         if button_a.is_pressed() and button_b.is_pressed():
-            display.scroll(self.highscore_val)
+            display.scroll(self.hs_val)
             self.set(self.me, 9)
             self.set(self.fruit, 5)
 
     def _run(self):
         while True:
             self.handle_button_presses()
-            x, x_val = self.get_movement("x")
-            y, y_val = self.get_movement("y")
-            new_pos = Dot(x, y, x_val, y_val)
-            if abs(new_pos.x_val - self.me.x_val) < 40:
-                new_pos.x, new_pos.x_val = self.me.x, self.me.x_val
-            if abs(new_pos.y_val - self.me.y_val) < 40:
-                new_pos.y, new_pos.y_val = self.me.y, self.me.y_val
+            x, xv = self.get_movement("x")
+            y, yv = self.get_movement("y")
+            new_pos = Dot(x, y, xv, yv, ME_BRIGHTNESS)
+            if abs(new_pos.xv - self.me.xv) < 40:
+                new_pos.x, new_pos.xv = self.me.x, self.me.xv
+            if abs(new_pos.yv - self.me.yv) < 40:
+                new_pos.y, new_pos.yv = self.me.y, self.me.yv
 
             if -1 in [new_pos.x, new_pos.y]:
                 break
 
             if not new_pos == self.me:
-                self.set(self.me, 0)
-                self.set(new_pos, 9)
-            self.me = new_pos
+                self.me.show(b=0)
+                self.me = new_pos
+                self.me.show(b=ME_BRIGHTNESS)
+
             if self.validate():
                 self.score += 1
                 self.fruit = self.get_fruit()
-                self.set(self.fruit, 5)
+                self.fruit.show()
 
 
-highscore = Highscore()
-game = Balance(highscore)
+hs = HS()
+game = Balance(hs)
 game.run()
